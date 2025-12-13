@@ -1,0 +1,7 @@
+[dependency-groups]
+test = [
+  "pytest",
+]
+
+[tool.pytest]
+testpaths = ["tests"]
