@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 import subprocess
 import sys
 import sysconfig
@@ -11,12 +12,12 @@ import warnings
 from pathlib import Path
 from venv import EnvBuilder
 
-import packaging
+import packaging.version
 import pytest
 
 
 TOP_DIR = Path(__file__).parent.parent
-TEST_CASES = ["meson-python/c", "setuptools/c"]
+TEST_CASES = ["meson-python/c", "scikit-build-core/c", "setuptools/c"]
 
 
 @pytest.fixture(scope="session", params=TEST_CASES)
