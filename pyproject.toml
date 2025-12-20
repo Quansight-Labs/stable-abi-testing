@@ -5,3 +5,13 @@ test = [
 
 [tool.pytest]
 testpaths = ["tests"]
+
+[tool.tox]
+requires = ["tox>=4.22"]
+env_list = ["3.15", "3.15t"]
+
+[tool.tox.env_run_base]
+commands = [
+  ["pytest"],
+]
+dependency_groups = ["test"]
