@@ -1,6 +1,13 @@
 [dependency-groups]
+backends = [
+  "meson-python",
+  "scikit-build-core",
+  "setuptools",
+]
 test = [
+  "build",
   "pytest",
+  { include-group = "backends" },
 ]
 
 [tool.pytest]
