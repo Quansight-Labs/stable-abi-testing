@@ -1,0 +1,14 @@
+[build-system]
+requires = [
+  "scikit-build-core",
+  "cython@git+https://github.com/cython/cython@freethreading-limited-api-preview",
+  "cython-cmake",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "limited-api"
+version = "1.2.3"
+
+[tool.scikit-build]
+wheel.py-api = "cp315"

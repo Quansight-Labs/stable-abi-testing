@@ -4,11 +4,16 @@ backends = [
   "scikit-build-core",
   "setuptools",
 ]
+build-tools = [
+  "cython @ git+https://github.com/cython/cython@freethreading-limited-api-preview",
+  "cython-cmake",  # for scikit-build-core
+]
 test = [
   "build",
   "pytest",
   "pytest-xdist",
   { include-group = "backends" },
+  { include-group = "build-tools" },
 ]
 
 [tool.pytest]

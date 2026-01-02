@@ -1,0 +1,9 @@
+[build-system]
+build-backend = "mesonpy"
+requires = [
+  "meson-python",
+  "cython@git+https://github.com/cython/cython@freethreading-limited-api-preview",
+]
+
+[tool.meson-python]
+limited-api = true

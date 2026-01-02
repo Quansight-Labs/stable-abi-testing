@@ -18,7 +18,14 @@ from typing import Generator
 
 
 TOP_DIR = Path(__file__).parent.parent
-TEST_CASES = ["meson-python/c", "scikit-build-core/c", "setuptools/c"]
+TEST_CASES = [
+    "meson-python/c",
+    "scikit-build-core/c",
+    "setuptools/c",
+    "meson-python/cython",
+    "scikit-build-core/cython",
+    "setuptools/cython",
+]
 
 
 @pytest.fixture(scope="session", params=TEST_CASES)
