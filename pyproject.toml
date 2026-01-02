@@ -7,6 +7,7 @@ backends = [
 test = [
   "build",
   "pytest",
+  "pytest-xdist",
   { include-group = "backends" },
 ]
 
@@ -19,6 +20,6 @@ env_list = ["3.15", "3.15t"]
 
 [tool.tox.env_run_base]
 commands = [
-  ["pytest"],
+  ["pytest", "-n", "auto"],
 ]
 dependency_groups = ["test"]
