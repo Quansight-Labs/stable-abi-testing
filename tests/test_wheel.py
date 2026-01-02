@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2025 Michał Górny
 # SPDX-License-Identifier: MIT
 
-import pytest
 
 import typing
 

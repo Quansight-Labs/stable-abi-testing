@@ -7,13 +7,14 @@ import importlib.metadata
 import subprocess
 import sys
 import sysconfig
-import typing
 import warnings
 from pathlib import Path
 from venv import EnvBuilder
 
 import packaging.version
 import pytest
+
+from typing import Generator
 
 
 TOP_DIR = Path(__file__).parent.parent
@@ -33,13 +34,19 @@ class VEnv(EnvBuilder):
         # https://github.com/python/cpython/pull/98743
         with warnings.catch_warnings():
             if sys.version_info[:3] == (3, 11, 0):
-                warnings.filterwarnings('ignore', 'check_home argument is deprecated and ignored.', DeprecationWarning)
+                warnings.filterwarnings(
+                    "ignore",
+                    "check_home argument is deprecated and ignored.",
+                    DeprecationWarning,
+                )
             self.create(env_dir)
 
         # Free-threaded Python 3.13 requires pip 24.1b1 or later.
-        if sysconfig.get_config_var('Py_GIL_DISABLED'):
-            if packaging.version.Version(importlib.metadata.version('pip')) < packaging.version.Version('24.1b1'):
-                self.pip('install', '--upgrade', 'pip >= 24.1b1')
+        if sysconfig.get_config_var("Py_GIL_DISABLED"):
+            if packaging.version.Version(
+                importlib.metadata.version("pip")
+            ) < packaging.version.Version("24.1b1"):
+                self.pip("install", "--upgrade", "pip >= 24.1b1")
 
     def ensure_directories(self, env_dir):
         context = super().ensure_directories(env_dir)
@@ -52,10 +59,10 @@ class VEnv(EnvBuilder):
         return subprocess.check_output([self.executable, *args]).decode()
 
     def pip(self, *args: str):
-        return self.python('-m', 'pip', *args)
+        return self.python("-m", "pip", *args)
 
 
 @pytest.fixture()
 def venv(tmp_path_factory) -> VEnv:
-    path = Path(tmp_path_factory.mktemp('mesonpy-test-venv'))
+    path = Path(tmp_path_factory.mktemp("mesonpy-test-venv"))
     return VEnv(path)
