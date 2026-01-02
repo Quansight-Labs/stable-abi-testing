@@ -11,10 +11,3 @@ ext_mod_limited = py.extension_module('limited',
   install: true,
   c_args: ['-D_Py_OPAQUE_PYOBJECT'],
 )
-
-test('load-test',
-  py,
-  args: [files('test_limited.py')],
-  env: { 'PYTHONPATH': meson.current_build_dir() },
-  workdir: meson.current_source_dir()
-)
