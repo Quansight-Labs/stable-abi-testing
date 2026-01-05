@@ -1,7 +1,7 @@
 [build-system]
 build-backend = "mesonpy"
 requires = [
-  "meson-python",
+  "meson-python @ git+https://github.com/mgorny/meson-python@freethreading-limited-api",
   "cython@git+https://github.com/cython/cython@freethreading-limited-api-preview",
 ]
 

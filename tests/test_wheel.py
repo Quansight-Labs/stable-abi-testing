@@ -9,10 +9,6 @@ import sysconfig
 
 
 IS_FREETHREADING = sysconfig.get_config_var("Py_GIL_DISABLED") == 1
-XFAIL_MESON_PYTHON = pytest.mark.xfail(
-    IS_FREETHREADING,
-    reason="meson-python disallows limited-api + freethreading",
-)
 XFAIL_CYTHON = pytest.mark.xfail(
     IS_FREETHREADING,
     reason="https://github.com/cython/cython/issues/7399#issuecomment-3710960697",
@@ -20,8 +16,8 @@ XFAIL_CYTHON = pytest.mark.xfail(
 
 TOP_DIR = Path(__file__).parent.parent
 TEST_CASES = [
-    pytest.param("meson-python/c", marks=[XFAIL_MESON_PYTHON]),
-    pytest.param("meson-python/cython", marks=[XFAIL_MESON_PYTHON, XFAIL_CYTHON]),
+    "meson-python/c",
+    pytest.param("meson-python/cython", marks=[XFAIL_CYTHON]),
     "scikit-build-core/c",
     pytest.param("scikit-build-core/cython", marks=[XFAIL_CYTHON]),
     "setuptools/c",
