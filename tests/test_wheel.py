@@ -13,4 +13,5 @@ def test_install(test_case: Path, tmp_path: Path, venv) -> None:
     builder = ProjectBuilder(test_case)
     dist_path = builder.build("wheel", tmp_path)
     venv.pip("install", dist_path)
-    venv.python("-c", "import limited; assert limited.add(1, 2) == 3")
+    # -Werror to catch the exception when extension is not freethreading-compatible
+    venv.python("-Werror", "-c", "import limited; assert limited.add(1, 2) == 3")

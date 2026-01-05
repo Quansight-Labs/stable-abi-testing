@@ -22,6 +22,9 @@ static struct PyMethodDef methods[] = {
 static PyModuleDef_Slot limited_module_slots[] = {
     {Py_mod_name, "limited"},
     {Py_mod_methods, methods},
+#if PY_VERSION_HEX >= 0x030D0000
+    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
     {0}
 };
 
