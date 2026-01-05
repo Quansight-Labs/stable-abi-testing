@@ -13,9 +13,14 @@ XFAIL_CYTHON = pytest.mark.xfail(
     IS_FREETHREADING,
     reason="https://github.com/cython/cython/issues/7399#issuecomment-3710960697",
 )
+XFAIL_PYO3 = pytest.mark.xfail(
+    IS_FREETHREADING,
+    reason="pyo3 does not support 3.15 (or PEP 803) yet",
+)
 
 TOP_DIR = Path(__file__).parent.parent
 TEST_CASES = [
+    pytest.param("maturin/rust", marks=[XFAIL_PYO3]),
     "meson-python/c",
     pytest.param("meson-python/cython", marks=[XFAIL_CYTHON]),
     "scikit-build-core/c",

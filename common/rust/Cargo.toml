@@ -1,0 +1,12 @@
+[package]
+name = "limited-api"
+version = "1.2.3"
+edition = "2021"
+
+[lib]
+name = "limited"
+crate-type = ["cdylib"]
+
+[dependencies]
+# TODO: update to py315 (or pep803?) when supported
+pyo3 = { version = "0.27.2", features = ["abi3-py314"] }
