@@ -2,15 +2,36 @@
 # SPDX-License-Identifier: MIT
 
 from build import ProjectBuilder
+import pytest
 
-import typing
-
-if typing.TYPE_CHECKING:
-    from pathlib import Path
+from pathlib import Path
+import sysconfig
 
 
-def test_install(test_case: Path, tmp_path: Path, venv) -> None:
-    builder = ProjectBuilder(test_case)
+IS_FREETHREADING = sysconfig.get_config_var("Py_GIL_DISABLED") == 1
+XFAIL_MESON_PYTHON = pytest.mark.xfail(
+    IS_FREETHREADING,
+    reason="meson-python disallows limited-api + freethreading",
+)
+XFAIL_CYTHON = pytest.mark.xfail(
+    IS_FREETHREADING,
+    reason="https://github.com/cython/cython/issues/7399#issuecomment-3710960697",
+)
+
+TOP_DIR = Path(__file__).parent.parent
+TEST_CASES = [
+    pytest.param("meson-python/c", marks=[XFAIL_MESON_PYTHON]),
+    pytest.param("meson-python/cython", marks=[XFAIL_MESON_PYTHON, XFAIL_CYTHON]),
+    "scikit-build-core/c",
+    pytest.param("scikit-build-core/cython", marks=[XFAIL_CYTHON]),
+    "setuptools/c",
+    pytest.param("setuptools/cython", marks=[XFAIL_CYTHON]),
+]
+
+
+@pytest.mark.parametrize("test_case", TEST_CASES)
+def test_install(test_case: str, tmp_path: Path, venv) -> None:
+    builder = ProjectBuilder(TOP_DIR / test_case)
     dist_path = builder.build("wheel", tmp_path)
     venv.pip("install", dist_path)
     # -Werror to catch the exception when extension is not freethreading-compatible

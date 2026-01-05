@@ -18,6 +18,7 @@ test = [
 
 [tool.pytest]
 testpaths = ["tests"]
+xfail_strict = true
 
 [tool.tox]
 requires = ["tox>=4.22"]

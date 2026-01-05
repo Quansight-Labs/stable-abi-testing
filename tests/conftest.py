@@ -14,24 +14,6 @@ from venv import EnvBuilder
 import packaging.version
 import pytest
 
-from typing import Generator
-
-
-TOP_DIR = Path(__file__).parent.parent
-TEST_CASES = [
-    "meson-python/c",
-    "scikit-build-core/c",
-    "setuptools/c",
-    "meson-python/cython",
-    "scikit-build-core/cython",
-    "setuptools/cython",
-]
-
-
-@pytest.fixture(scope="session", params=TEST_CASES)
-def test_case(request: pytest.Request) -> Generator[Path]:
-    yield TOP_DIR / request.param
-
 
 class VEnv(EnvBuilder):
     def __init__(self, env_dir):
