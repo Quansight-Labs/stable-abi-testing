@@ -25,6 +25,7 @@ TEST_CASES = [
     pytest.param("meson-python/cython", marks=[XFAIL_CYTHON]),
     "scikit-build-core/c",
     pytest.param("scikit-build-core/cython", marks=[XFAIL_CYTHON]),
+    "scikit-build-core/nanobind",
     "setuptools/c",
     pytest.param("setuptools/cython", marks=[XFAIL_CYTHON]),
 ]

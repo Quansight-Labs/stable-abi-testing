@@ -8,6 +8,7 @@ backends = [
 build-tools = [
   "cython @ git+https://github.com/cython/cython@freethreading-limited-api-preview",
   "cython-cmake",  # for scikit-build-core
+  "nanobind",
 ]
 test = [
   "build",
