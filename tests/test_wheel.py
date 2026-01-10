@@ -4,6 +4,7 @@
 from build import ProjectBuilder
 import pytest
 
+from contextlib import contextmanager
 from pathlib import Path
 import sysconfig
 
@@ -24,17 +25,24 @@ XFAIL_PYO3 = pytest.mark.xfail(
 
 TOP_DIR = Path(__file__).parent.parent
 TEST_CASES = [
-    pytest.param("maturin/rust", marks=[XFAIL_PYO3]),
+    "maturin/rust",
     "meson-python/c",
-    pytest.param("meson-python/cython", marks=[XFAIL_CYTHON]),
+    "meson-python/cython",
     "scikit-build-core/c",
-    pytest.param("scikit-build-core/cython", marks=[XFAIL_CYTHON]),
-    pytest.param("scikit-build-core/nanobind", marks=[XFAIL_NANOBIND]),
+    "scikit-build-core/cython",
+    "scikit-build-core/nanobind",
     "setuptools/c",
-    pytest.param("setuptools/cython", marks=[XFAIL_CYTHON]),
+    "setuptools/cython",
 ]
 
-TEST_PROGRAM = """
+TEST_CALL = """
+import limited
+
+value = limited.add(1, 2)
+assert value == 3, f"add(1, 2) == {value} instead of 3"
+"""
+
+TEST_ABI3 = """
 from pathlib import Path
 
 import limited
@@ -43,18 +51,54 @@ import limited
 if hasattr(limited, "__path__"):
     from limited import limited
 
-value = limited.add(1, 2)
-assert value == 3, f"add(1, 2) == {value} instead of 3"
-
 assert ".abi3" in Path(limited.__file__).name, (
     f"{limited.__file__} is not abi3 extension")
 """
 
 
+class XPASS(Exception):
+    pass
+
+
+@contextmanager
+def subxfail(condition: bool, reason: str) -> None:
+    if not condition:
+        yield
+    else:
+        try:
+            yield
+        except Exception:
+            pytest.xfail(reason)
+        else:
+            raise XPASS(reason)
+
+
 @pytest.mark.parametrize("test_case", TEST_CASES)
-def test_install(test_case: str, tmp_path: Path, venv) -> None:
+def test_install(test_case: str, tmp_path: Path, venv, subtests) -> None:
+    build_system, _, language = test_case.partition("/")
+
     builder = ProjectBuilder(TOP_DIR / test_case)
-    dist_path = builder.build("wheel", tmp_path)
+    with subxfail(
+        IS_FREETHREADING and language == "rust",
+        reason="pyo3 does not support 3.15 (or PEP 803) yet",
+    ):
+        dist_path = builder.build("wheel", tmp_path)
     venv.pip("install", dist_path)
-    # -Werror to catch the exception when extension is not freethreading-compatible
-    venv.python("-Werror", "-c", TEST_PROGRAM)
+
+    with subtests.test(msg="extension works"):
+        venv.python("-c", TEST_CALL)
+
+    if IS_FREETHREADING:
+        with subtests.test(msg="extensions does not enable GIL"):
+            with subxfail(
+                language == "cython",
+                reason="https://github.com/cython/cython/issues/7399#issuecomment-3710960697",
+            ):
+                venv.python("-Werror", "-c", "import limited")
+
+    with subtests.test(msg="extension has .abi3 suffix"):
+        with subxfail(
+            IS_FREETHREADING and language == "nanobind",
+            reason="nanobind does not support PEP 803 yet",
+        ):
+            venv.python("-c", TEST_ABI3)
