@@ -27,9 +27,6 @@ API as currently possible.
 - [A preview freethreading-limited-api branch of
   Cython](https://github.com/cython/cython/tree/freethreading-limited-api-preview)
   is used.
-- Cython currently fails to actually indicate extension compatibility
-  with GIL disabled.
-  [Cython#7399](https://github.com/cython/cython/issues/7399#issuecomment-3710960697).
 - PyO3 does not support PEP 793, PEP 803 or Python 3.15 yet.  The test
   currently builds a limited API extension targeting Python 3.14.
   [PyO3#5610](https://github.com/PyO3/pyo3/issues/5610).

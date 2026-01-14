@@ -78,11 +78,7 @@ def test_install(test_case: str, tmp_path: Path, venv, subtests) -> None:
 
     if IS_FREETHREADING:
         with subtests.test(msg="extensions does not enable GIL"):
-            with subxfail(
-                language == "cython",
-                reason="https://github.com/cython/cython/issues/7399#issuecomment-3710960697",
-            ):
-                venv.python("-Werror", "-c", "import limited")
+            venv.python("-Werror", "-c", "import limited")
 
     with subtests.test(msg="extension has .abi3 suffix"):
         with subxfail(
