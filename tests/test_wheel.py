@@ -91,3 +91,31 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
             reason="nanobind does not support PEP 803 yet",
         ):
             subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
+
+    # if we're testing with non-freethreading pythonX.Y, try pythonX.Yt
+    # otherwise, try pythonX.Y (presumably non-freethreading)
+    other_executable = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    if not IS_FREETHREADING:
+        other_executable += "t"
+    # try other python only if it works and is different than ours
+    other_result = subprocess.run(
+        [
+            other_executable,
+            "-c",
+            "import sysconfig; print(sysconfig.get_config_var('Py_GIL_DISABLED'))",
+        ],
+        capture_output=True,
+    )
+    if other_result.returncode != 0:
+        return
+    other_freethreading = other_result.stdout.strip() == b"1"
+    if other_freethreading == IS_FREETHREADING:
+        return
+
+    subprocess.run([other_executable, "-m", "venv", tmp_path / "venv2"], check=True)
+    venv2_python = tmp_path / "venv2/bin/python"
+    with subtests.test(msg=f"wheel can be installed by {other_executable}"):
+        with subxfail(True, reason="no build backend creates .abi3t wheels currently"):
+            subprocess.run(
+                [venv2_python, "-m", "pip", "install", "--force", dist_path], check=True
+            )
