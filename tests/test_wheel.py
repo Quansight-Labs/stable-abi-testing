@@ -92,7 +92,7 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         subprocess.run([venv_python, "-c", TEST_CALL], check=True)
 
     if IS_FREETHREADING:
-        with subtests.test(msg="extensions does not enable GIL"):
+        with subtests.test(msg="extension does not enable GIL"):
             subprocess.run([venv_python, "-Werror", "-c", "import limited"], check=True)
 
     with subtests.test(msg="extension has .abi3 suffix"):
@@ -133,3 +133,12 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         [sys.executable, "-m", "pip", "--python", venv2_python, "install", dist_path],
         check=True,
     )
+
+    with subtests.test(msg="extension works in other"):
+        subprocess.run([venv2_python, "-c", TEST_CALL], check=True)
+
+    if other_freethreading:
+        with subtests.test(msg="extension does not enable GIL in other"):
+            subprocess.run(
+                [venv2_python, "-Werror", "-c", "import limited"], check=True
+            )
