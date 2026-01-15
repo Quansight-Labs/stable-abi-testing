@@ -33,3 +33,4 @@ commands = [
   ["pytest", "-n", "auto"],
 ]
 dependency_groups = ["test"]
+set_env = { NO_CYTHON_COMPILE = "true" }
