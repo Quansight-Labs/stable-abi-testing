@@ -109,14 +109,17 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     if not IS_FREETHREADING:
         other_executable += "t"
     # try other python only if it works and is different than ours
-    other_result = subprocess.run(
-        [
-            other_executable,
-            "-c",
-            "import sysconfig; print(sysconfig.get_config_var('Py_GIL_DISABLED'))",
-        ],
-        capture_output=True,
-    )
+    try:
+        other_result = subprocess.run(
+            [
+                other_executable,
+                "-c",
+                "import sysconfig; print(sysconfig.get_config_var('Py_GIL_DISABLED'))",
+            ],
+            capture_output=True,
+        )
+    except FileNotFoundError:
+        return
     if other_result.returncode != 0:
         return
     other_freethreading = other_result.stdout.strip() == b"1"
