@@ -83,22 +83,10 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
 
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
     venv_python = tmp_path / "venv/bin/python"
-    with subxfail(
-        IS_FREETHREADING and "abi3t" in Path(dist_path).name,
-        reason="pip does not support abi3t wheels yet",
-    ):
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "--python",
-                venv_python,
-                "install",
-                dist_path,
-            ],
-            check=True,
-        )
+    subprocess.run(
+        [sys.executable, "-m", "pip", "--python", venv_python, "install", dist_path],
+        check=True,
+    )
 
     with subtests.test(msg="extension works"):
         subprocess.run([venv_python, "-c", TEST_CALL], check=True)
@@ -140,7 +128,10 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     subprocess.run([other_executable, "-m", "venv", tmp_path / "venv2"], check=True)
     venv2_python = tmp_path / "venv2/bin/python"
     with subtests.test(msg=f"wheel can be installed by {other_executable}"):
-        with subxfail(True, reason="no build backend creates .abi3t wheels currently"):
+        with subxfail(
+            "abi3t" not in Path(dist_path).name,
+            reason="no build backend creates .abi3t wheels currently",
+        ):
             subprocess.run(
                 [
                     sys.executable,

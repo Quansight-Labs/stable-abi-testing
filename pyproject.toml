@@ -12,7 +12,7 @@ build-tools = [
 ]
 test = [
   "build",
-  "pip",
+  "pip @ git+https://github.com/mgorny/pip@freethreading-limited-api",
   "pytest >= 9.0",
   "pytest-xdist",
   { include-group = "backends" },
