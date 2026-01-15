@@ -6,6 +6,8 @@ import pytest
 
 from contextlib import contextmanager
 from pathlib import Path
+import subprocess
+import sys
 import sysconfig
 
 
@@ -62,7 +64,7 @@ def subxfail(condition: bool, reason: str) -> None:
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES)
-def test_install(test_case: str, tmp_path: Path, venv, subtests) -> None:
+def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     build_system, _, language = test_case.partition("/")
 
     builder = ProjectBuilder(TOP_DIR / test_case)
@@ -71,18 +73,21 @@ def test_install(test_case: str, tmp_path: Path, venv, subtests) -> None:
         reason="pyo3 does not support 3.15 (or PEP 803) yet",
     ):
         dist_path = builder.build("wheel", tmp_path)
-    venv.pip("install", dist_path)
+
+    subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
+    venv_python = tmp_path / "venv/bin/python"
+    subprocess.run([venv_python, "-m", "pip", "install", dist_path], check=True)
 
     with subtests.test(msg="extension works"):
-        venv.python("-c", TEST_CALL)
+        subprocess.run([venv_python, "-c", TEST_CALL], check=True)
 
     if IS_FREETHREADING:
         with subtests.test(msg="extensions does not enable GIL"):
-            venv.python("-Werror", "-c", "import limited")
+            subprocess.run([venv_python, "-Werror", "-c", "import limited"], check=True)
 
     with subtests.test(msg="extension has .abi3 suffix"):
         with subxfail(
             IS_FREETHREADING and language == "nanobind",
             reason="nanobind does not support PEP 803 yet",
         ):
-            venv.python("-c", TEST_ABI3)
+            subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
