@@ -74,9 +74,20 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     ):
         dist_path = builder.build("wheel", tmp_path)
 
+    with subtests.test(msg="wheel has 'abi3.abi3t' tag"):
+        with subxfail(
+            build_system != "meson-python",
+            reason="Only meson-python fork builds abi3.abi3t",
+        ):
+            assert "abi3.abi3t" in Path(dist_path).name
+
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
     venv_python = tmp_path / "venv/bin/python"
-    subprocess.run([venv_python, "-m", "pip", "install", dist_path], check=True)
+    with subxfail(
+        IS_FREETHREADING and "abi3t" in Path(dist_path).name,
+        reason="pip does not support abi3t wheels yet",
+    ):
+        subprocess.run([venv_python, "-m", "pip", "install", dist_path], check=True)
 
     with subtests.test(msg="extension works"):
         subprocess.run([venv_python, "-c", TEST_CALL], check=True)
