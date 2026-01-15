@@ -87,7 +87,18 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         IS_FREETHREADING and "abi3t" in Path(dist_path).name,
         reason="pip does not support abi3t wheels yet",
     ):
-        subprocess.run([venv_python, "-m", "pip", "install", dist_path], check=True)
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "--python",
+                venv_python,
+                "install",
+                dist_path,
+            ],
+            check=True,
+        )
 
     with subtests.test(msg="extension works"):
         subprocess.run([venv_python, "-c", TEST_CALL], check=True)
@@ -131,5 +142,14 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     with subtests.test(msg=f"wheel can be installed by {other_executable}"):
         with subxfail(True, reason="no build backend creates .abi3t wheels currently"):
             subprocess.run(
-                [venv2_python, "-m", "pip", "install", "--force", dist_path], check=True
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "--python",
+                    venv2_python,
+                    "install",
+                    dist_path,
+                ],
+                check=True,
             )

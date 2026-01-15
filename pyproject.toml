@@ -12,6 +12,7 @@ build-tools = [
 ]
 test = [
   "build",
+  "pip",
   "pytest >= 9.0",
   "pytest-xdist",
   { include-group = "backends" },
