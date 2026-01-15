@@ -102,6 +102,8 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         ):
             subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
 
+    if "abi3t" not in Path(dist_path).name:
+        return
     # if we're testing with non-freethreading pythonX.Y, try pythonX.Yt
     # otherwise, try pythonX.Y (presumably non-freethreading)
     other_executable = f"python{sys.version_info.major}.{sys.version_info.minor}"
@@ -127,20 +129,7 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
 
     subprocess.run([other_executable, "-m", "venv", tmp_path / "venv2"], check=True)
     venv2_python = tmp_path / "venv2/bin/python"
-    with subtests.test(msg=f"wheel can be installed by {other_executable}"):
-        with subxfail(
-            "abi3t" not in Path(dist_path).name,
-            reason="no build backend creates .abi3t wheels currently",
-        ):
-            subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "--python",
-                    venv2_python,
-                    "install",
-                    dist_path,
-                ],
-                check=True,
-            )
+    subprocess.run(
+        [sys.executable, "-m", "pip", "--python", venv2_python, "install", dist_path],
+        check=True,
+    )
