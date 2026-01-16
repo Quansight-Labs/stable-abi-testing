@@ -1,4 +1,4 @@
-project('python-limited-api', 'cython',
+project('python-limited-api', 'c', 'cython',
         version: '1.2.3',
         meson_version: '>=1.3.0')
 
