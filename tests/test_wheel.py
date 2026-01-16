@@ -6,6 +6,7 @@ import pytest
 
 from contextlib import contextmanager
 from pathlib import Path
+import os
 import subprocess
 import sys
 import sysconfig
@@ -82,7 +83,10 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
             assert "abi3.abi3t" in Path(dist_path).name
 
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
-    venv_python = tmp_path / "venv/bin/python"
+    python_exe = "python.exe" if os.name == "nt" else "python"
+    venv_python = (
+        tmp_path / sysconfig.get_path("scripts", vars={"base": "venv"}) / python_exe
+    )
     subprocess.run(
         [sys.executable, "-m", "pip", "--python", venv_python, "install", dist_path],
         check=True,
@@ -128,7 +132,9 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         return
 
     subprocess.run([other_executable, "-m", "venv", tmp_path / "venv2"], check=True)
-    venv2_python = tmp_path / "venv2/bin/python"
+    venv2_python = (
+        tmp_path / sysconfig.get_path("scripts", vars={"base": "venv2"}) / python_exe
+    )
     subprocess.run(
         [sys.executable, "-m", "pip", "--python", venv2_python, "install", dist_path],
         check=True,
