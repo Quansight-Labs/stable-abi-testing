@@ -99,12 +99,14 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         with subtests.test(msg="extension does not enable GIL"):
             subprocess.run([venv_python, "-Werror", "-c", "import limited"], check=True)
 
-    with subtests.test(msg="extension has .abi3 suffix"):
-        with subxfail(
-            IS_FREETHREADING and language == "nanobind",
-            reason="nanobind does not support PEP 803 yet",
-        ):
-            subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
+    # .abi3 suffix is not used on Windows
+    if os.name != "nt":
+        with subtests.test(msg="extension has .abi3 suffix"):
+            with subxfail(
+                IS_FREETHREADING and language == "nanobind",
+                reason="nanobind does not support PEP 803 yet",
+            ):
+                subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
 
     if "abi3t" not in Path(dist_path).name:
         return
