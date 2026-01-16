@@ -31,3 +31,8 @@ static PyModuleDef_Slot limited_module_slots[] = {
 PyMODEXPORT_FUNC PyModExport_limited(void) {
     return limited_module_slots;
 }
+
+PyMODINIT_FUNC PyInit_limited(void) {
+    PyErr_SetString(PyExc_NotImplementedError, "legacy init not supported");
+    return NULL;
+}
