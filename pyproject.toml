@@ -15,6 +15,7 @@ test = [
   "pip @ git+https://github.com/mgorny/pip@freethreading-limited-api",
   "pytest >= 9.0",
   "pytest-xdist",
+  "ninja",  # needed by meson
   { include-group = "backends" },
   { include-group = "build-tools" },
 ]
