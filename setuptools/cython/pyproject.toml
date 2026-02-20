@@ -9,12 +9,5 @@ requires = [
 name = "limited-api"
 version = "1.2.3"
 
-[[tool.setuptools.ext-modules]]
-name = "limited"
-sources = ["limited.pyx"]
-py-limited-api = true
-# define-macros is broken: https://github.com/pypa/setuptools/issues/4810
-extra-compile-args = [
-    "-DPy_LIMITED_API=0x030f0000",
-    "-D_Py_OPAQUE_PYOBJECT",
-]
+[tool.setuptools.packages.find]
+where = ["src"]
