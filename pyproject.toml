@@ -3,7 +3,8 @@ backends = [
   "maturin",
   "meson-python @ git+https://github.com/mgorny/meson-python@freethreading-limited-api",
   "scikit-build-core",
-  "setuptools",
+  "setuptools @ git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
+  "packaging @ git+https://github.com/ngoldbaum/packaging@abi3.abi3t",
 ]
 build-tools = [
   "cython @ git+https://github.com/cython/cython@freethreading-limited-api-preview",
@@ -11,10 +12,12 @@ build-tools = [
   "nanobind",
 ]
 test = [
+  "ninja",
   "build",
   "pip @ git+https://github.com/mgorny/pip@freethreading-limited-api",
   "pytest >= 9.0",
   "pytest-xdist",
+  "pygments @ git+https://github.com/pygments/pygments",  # https://github.com/pygments/pygments/issues/3039
   { include-group = "backends" },
   { include-group = "build-tools" },
 ]
@@ -30,7 +33,7 @@ skipsdist = true
 
 [tool.tox.env_run_base]
 commands = [
-  ["pytest", "-n", "auto"],
+  ["pytest", { replace = "posargs", default = ["-n", "auto"], extend = true } ],
 ]
 dependency_groups = ["test"]
 set_env = { NO_CYTHON_COMPILE = "true" }

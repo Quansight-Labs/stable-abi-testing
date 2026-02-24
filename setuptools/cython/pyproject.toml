@@ -1,13 +1,17 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools",
+  "setuptools@git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
+  "packaging@git+https://github.com/ngoldbaum/packaging@abi3.abi3t",
   "cython@git+https://github.com/cython/cython@freethreading-limited-api-preview",
 ]
 
 [project]
 name = "limited-api"
 version = "1.2.3"
+dependencies = [
+  "setuptools@git+https://github.com/ngoldbaum/setuptools@abi3.abi3t"
+]
 
 [[tool.setuptools.ext-modules]]
 name = "limited"
