@@ -77,8 +77,8 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
 
     with subtests.test(msg="wheel has 'abi3.abi3t' tag"):
         with subxfail(
-            build_system != "meson-python",
-            reason="Only meson-python fork builds abi3.abi3t",
+            build_system not in ("meson-python", "setuptools"),
+            reason="Only meson-python and setuptools forks build abi3.abi3t",
         ):
             assert "abi3.abi3t" in Path(dist_path).name
 
