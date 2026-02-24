@@ -70,7 +70,7 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
 
     builder = ProjectBuilder(TOP_DIR / test_case)
     with subxfail(
-        sys.version_info >= (3, 15) and language == "rust",
+        IS_FREETHREADING and language == "rust",
         reason="pyo3 does not support 3.15 (or PEP 803) yet",
     ):
         dist_path = builder.build("wheel", tmp_path)
