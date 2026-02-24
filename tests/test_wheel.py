@@ -4,7 +4,7 @@
 from build import ProjectBuilder
 import pytest
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 import os
 import subprocess
@@ -70,17 +70,25 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
 
     builder = ProjectBuilder(TOP_DIR / test_case)
     with subxfail(
-        IS_FREETHREADING and language == "rust",
+        sys.version_info >= (3, 15) and language == "rust",
         reason="pyo3 does not support 3.15 (or PEP 803) yet",
     ):
         dist_path = builder.build("wheel", tmp_path)
 
-    with subtests.test(msg="wheel has 'abi3.abi3t' tag"):
-        with subxfail(
-            build_system not in ("meson-python", "setuptools"),
-            reason="Only meson-python and setuptools forks build abi3.abi3t",
-        ):
-            assert "abi3.abi3t" in Path(dist_path).name
+    with subtests.test(msg="wheel has correct ABI tag"):
+        if IS_FREETHREADING or build_system == "meson_python":
+            context = subxfail(
+                build_system not in ("meson-python", "setuptools"),
+                reason="Only meson-python and setuptools forks build abi3.abi3t",
+            )
+        else:
+            context = nullcontext()
+        with context:
+            if ((build_system == "setuptools" and IS_FREETHREADING) or
+                build_system == "meson_python"):
+                assert "abi3.abi3t" in Path(dist_path).name
+            else:
+                assert "abi3" in Path(dist_path).name
 
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
     python_exe = "python.exe" if os.name == "nt" else "python"
