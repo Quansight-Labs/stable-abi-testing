@@ -12,12 +12,10 @@ build-tools = [
   "nanobind",
 ]
 test = [
-  "ninja",
   "build",
   "pip @ git+https://github.com/mgorny/pip@freethreading-limited-api",
   "pytest >= 9.0",
   "pytest-xdist",
-  "pygments @ git+https://github.com/pygments/pygments",  # https://github.com/pygments/pygments/issues/3039
   { include-group = "backends" },
   { include-group = "build-tools" },
 ]
@@ -33,7 +31,7 @@ skipsdist = true
 
 [tool.tox.env_run_base]
 commands = [
-  ["pytest", { replace = "posargs", default = ["-n", "auto"], extend = true } ],
+  ["pytest", "-n", "auto"],
 ]
 dependency_groups = ["test"]
 set_env = { NO_CYTHON_COMPILE = "true" }
