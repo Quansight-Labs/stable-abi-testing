@@ -30,7 +30,7 @@ skipsdist = true
 
 [tool.tox.env_run_base]
 commands = [
-  ["pytest", "-n", "auto"],
+  ["pytest", { replace = "posargs", default = ["-n", "auto"], extend = true } ],
 ]
 dependency_groups = ["test"]
 set_env = { NO_CYTHON_COMPILE = "true" }
