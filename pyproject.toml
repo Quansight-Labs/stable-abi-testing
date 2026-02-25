@@ -16,6 +16,7 @@ test = [
   "pip @ git+https://github.com/mgorny/pip@freethreading-limited-api",
   "pytest >= 9.0",
   "pytest-xdist",
+  "ninja",  # needed by meson
   { include-group = "backends" },
   { include-group = "build-tools" },
 ]
@@ -31,7 +32,7 @@ skipsdist = true
 
 [tool.tox.env_run_base]
 commands = [
-  ["pytest", "-n", "auto"],
+  ["pytest", { replace = "posargs", default = ["-n", "auto"], extend = true } ],
 ]
 dependency_groups = ["test"]
 set_env = { NO_CYTHON_COMPILE = "true" }
