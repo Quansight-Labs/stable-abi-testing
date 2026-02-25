@@ -9,9 +9,6 @@ requires = [
 [project]
 name = "limited-api"
 version = "1.2.3"
-dependencies = [
-  "setuptools@git+https://github.com/ngoldbaum/setuptools@abi3.abi3t"
-]
 
 [[tool.setuptools.ext-modules]]
 name = "limited"
