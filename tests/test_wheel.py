@@ -74,13 +74,21 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
         reason="pyo3 does not support 3.15 (or PEP 803) yet",
     ):
         dist_path = builder.build("wheel", tmp_path)
+        path_name = Path(dist_path).name
 
-    with subtests.test(msg="wheel has 'abi3.abi3t' tag"):
-        with subxfail(
-            build_system != "meson-python",
-            reason="Only meson-python fork builds abi3.abi3t",
-        ):
-            assert "abi3.abi3t" in Path(dist_path).name
+
+    with subtests.test(msg="wheel has correct ABI tag"):
+        if build_system == "setuptools":
+            # The setuptools fork doesn't yet have support for forcing a GIL-enabled build
+            # to produce an abi3.abi3t wheel
+            if IS_FREETHREADING:
+                assert "abi3.abi3t" in path_name
+            else:
+                assert "abi3" in path_name and "abi3t" not in path_name
+        else:
+            with subxfail(build_system != "meson-python",
+                          reason="Only meson-python and setuptools forks build abi3.abi3t"):
+                assert "abi3.abi3t" in path_name
 
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
     python_exe = "python.exe" if os.name == "nt" else "python"
@@ -108,7 +116,7 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
             ):
                 subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
 
-    if "abi3t" not in Path(dist_path).name:
+    if "abi3t" not in path_name:
         return
     # if we're testing with non-freethreading pythonX.Y, try pythonX.Yt
     # otherwise, try pythonX.Y (presumably non-freethreading)

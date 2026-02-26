@@ -3,7 +3,8 @@ backends = [
   "maturin",
   "meson-python @ git+https://github.com/mgorny/meson-python@freethreading-limited-api",
   "scikit-build-core",
-  "setuptools",
+  "setuptools @ git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
+  "packaging @ git+https://github.com/ngoldbaum/packaging@abi3.abi3t",
 ]
 build-tools = [
   "cython @ git+https://github.com/cython/cython@freethreading-limited-api-preview",
