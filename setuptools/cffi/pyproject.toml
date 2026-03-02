@@ -12,6 +12,3 @@ version = "1.2.3"
 dependencies = [
   "cffi@git+https://github.com/ngoldbaum/cffi@abi3t.abi3",
 ]
-
-[tool.distutils.bdist_wheel]
-py_limited_api = "cp315"
