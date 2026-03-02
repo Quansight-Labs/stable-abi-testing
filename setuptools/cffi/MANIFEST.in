@@ -1,3 +1,3 @@
-recursive-include src/limited
+recursive-include src/limited *.py
 include setup.py
 include pyproject.toml
