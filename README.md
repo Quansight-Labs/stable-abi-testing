@@ -10,13 +10,13 @@ implementation](https://github.com/python/cpython/pull/136505) of [PEP
 
 Implementation notes
 --------------------
-This is a work-in-progress, based on the state as of 2026-01-10.
+This is a work-in-progress, based on the state as of 2026-03-05.
 Whenever possible, official or semi-official support is used.
 Elsewhere, hacks are employed, or the packages are as close to the new
 API as currently possible.
 
 - In packages using the C API, the new limited API is enabled via
-  setting `-D_Py_OPAQUE_PYOBJECT` as required by Python 3.15.0a2.
+  setting `-D_Py_OPAQUE_PYOBJECT` as required by Python 3.15.0 alphas.
   According to PEP 803, the final implementation should not require
   this.  This is also done on packages that have explicit switches for
   limited API, since these do not account for PEP 803.
@@ -27,11 +27,20 @@ API as currently possible.
 - [A preview freethreading-limited-api branch of
   Cython](https://github.com/cython/cython/tree/freethreading-limited-api-preview)
   is used.
-- PyO3 does not support PEP 793, PEP 803 or Python 3.15 yet.  The test
+- PyO3 does not support PEP 793 or PEP 803 yet.  The test
   currently builds a limited API extension targeting Python 3.14.
-  [PyO3#5610](https://github.com/PyO3/pyo3/issues/5610).
-- nanobind does not support PEP 793 yet.  The test package uses regular
-  limited API or freethreading API currently.
-  [nanobind#1187](https://github.com/wjakob/nanobind/discussions/1187).
-- None of the build systems implement the new wheel tags found in PEP
-  803.  As such, tests are not currently looking at wheel tags.
+  [PyO3#5786](https://github.com/PyO3/pyo3/issues/5786).
+- nanobind has preliminary support for PEP 793 and PEP 803 in the [`abi3t`
+  branch](https://github.com/wjakob/nanobind/compare/master...abi3t).  The test
+  package uses regular limited API or freethreading API currently.
+  [nanobind#1187](https://github.com/wjakob/nanobind/discussions/1187)
+  [nanobind#1284](https://github.com/wjakob/nanobind/discussions/1284)
+  .
+- A minimal [fork of CFFI](https://github.com/python-cffi/cffi/pull/232) is
+  used, to bypass code paths that do not allow limited API builds on the
+  free-threaded build.
+- A minimal [fork of packaging](https://github.com/pypa/packaging/pull/1099) is
+  used, to add support for the `abi3t` ABI tag.
+- A minimal [fork of setuptools](https://github.com/pypa/setuptools/pull/5193)
+  is used, to add support for the `abi3t` ABI tag and `abi3.abi3t` compressed
+  tag set.
