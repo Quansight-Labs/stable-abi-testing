@@ -75,13 +75,8 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     build_system, _, language = test_case.partition("/")
 
     builder = ProjectBuilder(TOP_DIR / test_case)
-    with subxfail(
-        IS_FREETHREADING and language == "rust",
-        reason="pyo3 does not support 3.15 (or PEP 803) yet",
-    ):
-        dist_path = builder.build("wheel", tmp_path)
-        path_name = Path(dist_path).name
-
+    dist_path = builder.build("wheel", tmp_path)
+    path_name = Path(dist_path).name
 
     with subtests.test(msg="wheel has correct ABI tag"):
         if build_system == "setuptools":
@@ -92,8 +87,10 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
             else:
                 assert "abi3" in path_name and "abi3t" not in path_name
         else:
-            with subxfail(build_system != "meson-python",
-                          reason="Only meson-python and setuptools forks build abi3.abi3t"):
+            with subxfail(
+                build_system != "meson-python",
+                reason="Only meson-python and setuptools forks build abi3.abi3t",
+            ):
                 assert "abi3.abi3t" in path_name
 
     subprocess.run([sys.executable, "-m", "venv", tmp_path / "venv"], check=True)
@@ -117,8 +114,8 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     if os.name != "nt":
         with subtests.test(msg="extension has .abi3 suffix"):
             with subxfail(
-                IS_FREETHREADING and language == "nanobind",
-                reason="nanobind does not support PEP 803 yet",
+                IS_FREETHREADING and language in ("nanobind", "rust"),
+                reason="nanobind and PyO3 do not support PEP 803 yet",
             ):
                 subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
 
