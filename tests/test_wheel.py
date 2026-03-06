@@ -38,9 +38,15 @@ from pathlib import Path
 
 import limited
 
-# if the build system created a package, import the actual extension
 if hasattr(limited, "__path__"):
-    from limited import limited
+    if hasattr(limited, "lib"):
+        # limited.lib is present for CFFI. We had to create a Python wrapper package
+        # because CFFI doesn't directly expose wrapped functions in the top-level
+        # namespace of an extension module
+        limited = limited._limited
+    else:
+        # if the build system created a package, import the actual extension
+        from limited import limited
 
 assert ".abi3" in Path(limited.__file__).name, (
     f"{limited.__file__} is not abi3 extension")

@@ -5,6 +5,7 @@ backends = [
   "scikit-build-core",
   "setuptools @ git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
   "packaging @ git+https://github.com/ngoldbaum/packaging@abi3.abi3t",
+  "cffi @ git+https://github.com/ngoldbaum/cffi@abi3t.abi3",
 ]
 build-tools = [
   "cython @ git+https://github.com/cython/cython@freethreading-limited-api-preview",
