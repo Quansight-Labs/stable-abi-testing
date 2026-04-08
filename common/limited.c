@@ -19,11 +19,18 @@ static struct PyMethodDef methods[] = {
     { NULL, NULL, 0, NULL },
 };
 
+#if PY_VERSION_HEX >= 0x030F00A8
+PyABIInfo_VAR(abi_info);
+#endif
+
 static PyModuleDef_Slot limited_module_slots[] = {
     {Py_mod_name, "limited"},
     {Py_mod_methods, methods},
 #if PY_VERSION_HEX >= 0x030D0000
     {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
+#if PY_VERSION_HEX >= 0x030F00A8
+    {Py_mod_abi, &abi_info},
 #endif
     {0}
 };
