@@ -8,5 +8,4 @@ name = "limited"
 crate-type = ["cdylib"]
 
 [dependencies]
-# TODO: update to py315 (or pep803?) when supported
-pyo3 = { version = "0.28.2", features = ["abi3-py314"] }
+pyo3 = { git = "https://github.com/ngoldbaum/pyo3", branch = "opaque-pyobject", features = ["abi3t-py315"] }

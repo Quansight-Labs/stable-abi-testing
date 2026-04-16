@@ -2,7 +2,6 @@
 build-backend = "setuptools.build_meta"
 requires = [
   "setuptools@git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
-  "packaging@git+https://github.com/ngoldbaum/packaging@abi3.abi3t",
   "cython@git+https://github.com/cython/cython@freethreading-limited-api-preview",
 ]
 
@@ -17,5 +16,5 @@ py-limited-api = true
 # define-macros is broken: https://github.com/pypa/setuptools/issues/4810
 extra-compile-args = [
     "-DPy_LIMITED_API=0x030f0000",
-    "-D_Py_OPAQUE_PYOBJECT",
+    "-DPy_TARGET_ABI3T=0x030f0000",
 ]

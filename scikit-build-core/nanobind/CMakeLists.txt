@@ -15,5 +15,5 @@ nanobind_add_module(limited
   limited.cxx)
 # TODO: nanobind does not implement PEP 793 / PEP 803 yet
 # https://github.com/wjakob/nanobind/discussions/1187
-#target_compile_definitions(limited PRIVATE -D_Py_OPAQUE_PYOBJECT)
+#target_compile_definitions(limited PRIVATE -DPy_TARGET_ABI3T=0x030f0000)
 install(TARGETS limited DESTINATION ${SKBUILD_PLATLIB_DIR})

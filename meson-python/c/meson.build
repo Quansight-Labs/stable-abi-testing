@@ -9,5 +9,5 @@ ext_mod_limited = py.extension_module('limited',
   'limited.c',
   limited_api: '3.15',
   install: true,
-  c_args: ['-D_Py_OPAQUE_PYOBJECT'],
+  c_args: ['-DPy_TARGET_ABI3T=0x030f0000'],
 )
