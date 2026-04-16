@@ -6,4 +6,3 @@ requires = [
 
 [tool.meson-python]
 limited-api = true
-freethreading-limited-api = true
