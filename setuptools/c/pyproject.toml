@@ -14,6 +14,5 @@ sources = ["limited.c"]
 py-limited-api = true
 # define-macros is broken: https://github.com/pypa/setuptools/issues/4810
 extra-compile-args = [
-    "-DPy_LIMITED_API=0x030f0000",
     "-DPy_TARGET_ABI3T=0x030f0000",
 ]
