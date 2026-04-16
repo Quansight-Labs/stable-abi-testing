@@ -88,7 +88,7 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
                 assert "abi3" in path_name and "abi3t" not in path_name
         else:
             with subxfail(
-                build_system != "meson-python",
+                build_system not in ("meson-python", "maturin"),
                 reason="Only meson-python and setuptools forks build abi3.abi3t",
             ):
                 assert "abi3.abi3t" in path_name
@@ -114,8 +114,8 @@ def test_install(test_case: str, tmp_path: Path, subtests) -> None:
     if os.name != "nt":
         with subtests.test(msg="extension has .abi3 suffix"):
             with subxfail(
-                IS_FREETHREADING and language in ("nanobind", "rust"),
-                reason="nanobind and PyO3 do not support PEP 803 yet",
+                IS_FREETHREADING and language  == "nanobind",
+                reason="nanobind does not support PEP 803 yet",
             ):
                 subprocess.run([venv_python, "-c", TEST_ABI3], check=True)
 

@@ -16,9 +16,8 @@ Elsewhere, hacks are employed, or the packages are as close to the new
 API as currently possible.
 
 - In packages using the C API, the new limited API is enabled via
-  setting `-D_Py_OPAQUE_PYOBJECT` as required by Python 3.15.0 alphas.
-  According to PEP 803, the final implementation should not require
-  this.  This is also done on packages that have explicit switches for
+  setting `-DPy_TARGET_ABI3T=0x30f0000` as described in PEP 803.
+  This is also done on some packages that have explicit switches for
   limited API, since these do not account for PEP 803.
 - A minimal [fork of
   meson-python](https://github.com/mgorny/meson-python/tree/freethreading-limited-api)
@@ -27,9 +26,9 @@ API as currently possible.
 - [A preview freethreading-limited-api branch of
   Cython](https://github.com/cython/cython/tree/freethreading-limited-api-preview)
   is used.
-- PyO3 does not support PEP 793 or PEP 803 yet.  The test
-  currently builds a limited API extension targeting Python 3.14.
-  [PyO3#5786](https://github.com/PyO3/pyo3/issues/5786).
+- Forks of [PyO3](https://github.com/PyO3/pyo3/pull/5807) and
+  [maturin](https://github.com/PyO3/maturin/pull/3113) are used that add
+  preliminary PEP 803 support.
 - nanobind has preliminary support for PEP 793 and PEP 803 in the [`abi3t`
   branch](https://github.com/wjakob/nanobind/compare/master...abi3t).  The test
   package uses regular limited API or freethreading API currently.
@@ -39,8 +38,6 @@ API as currently possible.
 - A minimal [fork of CFFI](https://github.com/python-cffi/cffi/pull/232) is
   used, to bypass code paths that do not allow limited API builds on the
   free-threaded build.
-- A minimal [fork of packaging](https://github.com/pypa/packaging/pull/1099) is
-  used, to add support for the `abi3t` ABI tag.
 - A minimal [fork of setuptools](https://github.com/pypa/setuptools/pull/5193)
   is used, to add support for the `abi3t` ABI tag and `abi3.abi3t` compressed
   tag set.
