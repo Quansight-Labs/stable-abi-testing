@@ -23,6 +23,18 @@ static struct PyMethodDef methods[] = {
 PyABIInfo_VAR(abi_info);
 #endif
 
+#if PY_VERSION_HEX >= 0x030F00B0
+
+static PySlot limited_module_slots[] = {
+    PySlot_STATIC_DATA(Py_mod_name, "limited"),
+    PySlot_STATIC_DATA(Py_mod_methods, methods),
+    PySlot_STATIC_DATA(Py_mod_gil, Py_MOD_GIL_NOT_USED),
+    PySlot_STATIC_DATA(Py_mod_abi, &abi_info),
+    PySlot_END,
+};
+
+#else
+
 static PyModuleDef_Slot limited_module_slots[] = {
     {Py_mod_name, "limited"},
     {Py_mod_methods, methods},
@@ -34,6 +46,8 @@ static PyModuleDef_Slot limited_module_slots[] = {
 #endif
     {0}
 };
+
+#endif
 
 PyMODEXPORT_FUNC PyModExport_limited(void) {
     return limited_module_slots;
