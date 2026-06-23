@@ -20,7 +20,7 @@ API as currently possible.
   This is also done on some packages that have explicit switches for
   limited API, since these do not account for PEP 803.
 - A minimal [fork of
-  meson-python](https://github.com/mgorny/meson-python/tree/freethreading-limited-api)
+  meson-python](https://github.com/mgorny/meson-python/tree/abi3t)
   is used, in order to remove the explicit check that blocks disabling
   GIL while using limited API.
 - [A preview freethreading-limited-api branch of

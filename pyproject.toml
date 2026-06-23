@@ -2,7 +2,7 @@
 backends = [
   "maturin @ git+https://github.com/ngoldbaum/maturin@abi3t",
   "meson @ git+https://github.com/mgorny/meson@pep803",
-  "meson-python @ git+https://github.com/mgorny/meson-python@freethreading-limited-api",
+  "meson-python @ git+https://github.com/mgorny/meson-python@abi3t",
   "scikit-build-core",
   "setuptools @ git+https://github.com/ngoldbaum/setuptools@abi3.abi3t",
   "cffi @ git+https://github.com/ngoldbaum/cffi@abi3t.abi3",
