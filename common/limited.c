@@ -28,8 +28,8 @@ PyABIInfo_VAR(abi_info);
 static PySlot limited_module_slots[] = {
     PySlot_STATIC_DATA(Py_mod_name, "limited"),
     PySlot_STATIC_DATA(Py_mod_methods, methods),
-    PySlot_STATIC_DATA(Py_mod_gil, Py_MOD_GIL_NOT_USED),
-    PySlot_STATIC_DATA(Py_mod_abi, &abi_info),
+    PySlot_DATA(Py_mod_gil, Py_MOD_GIL_NOT_USED),
+    PySlot_DATA(Py_mod_abi, &abi_info),
     PySlot_END,
 };
 
